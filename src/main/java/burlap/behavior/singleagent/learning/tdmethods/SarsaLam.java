@@ -170,8 +170,12 @@ public class SarsaLam extends QLearning {
 				eo = ((Option)action).control(env, this.gamma);
 			}
 
-			HashableState nextState = this.stateHash(eo.op);
-			Action nextAction = learningPolicy.action(nextState.s());
+			HashableState nextState = curState;
+			Action nextAction = action;
+			if (!env.isInTerminalState()) {
+				nextState = this.stateHash(eo.op);
+				nextAction = learningPolicy.action(nextState.s());
+			}
 			QValue nextQ = this.getQ(nextState, nextAction);
 			double nextQV = nextQ.q;
 
