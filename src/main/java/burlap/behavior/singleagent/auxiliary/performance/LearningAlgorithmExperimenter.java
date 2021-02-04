@@ -76,7 +76,7 @@ public class LearningAlgorithmExperimenter {
 	/**
 	 * The PerformancePlotter used to collect and plot results
 	 */
-	protected PerformancePlotter		plotter = null;
+	protected PerformancePlotterSilent		plotter = null;
 	
 	
 	/**
@@ -121,7 +121,7 @@ public class LearningAlgorithmExperimenter {
 	 * @param trialLength the length of the trials (by default in episodes, but can be intereted as maximum step length)
 	 * @param agentFactories factories to generate the agents to be tested.
 	 */
-	public LearningAlgorithmExperimenter(Environment testEnvironment, int nTrials, int trialLength, LearningAgentFactory...agentFactories){
+	public LearningAlgorithmExperimenter(Environment testEnvironment, int nTrials, int trialLength, boolean silentMode, LearningAgentFactory...agentFactories){
 		
 		if(agentFactories.length == 0){
 			throw new RuntimeException("Zero agent factories provided. At least one must be given for an experiment");
@@ -131,6 +131,7 @@ public class LearningAlgorithmExperimenter {
 		this.nTrials = nTrials;
 		this.trialLength = trialLength;
 		this.agentFactories = agentFactories;
+		this.displayPlots = !silentMode;
 	}
 	
 	
@@ -150,8 +151,8 @@ public class LearningAlgorithmExperimenter {
 			trialMode = TrialMode.MOST_RECENT_TRIAL_ONLY;
 		}
 		
-		this.displayPlots = true;
-		this.plotter = new PerformancePlotter(this.agentFactories[0].getAgentName(), chartWidth, chartHeight, columns, maxWindowHeight, trialMode, metrics);
+//		this.displayPlots = true;
+		this.plotter = new PerformancePlotterSilent(this.agentFactories[0].getAgentName(), chartWidth, chartHeight, columns, maxWindowHeight, trialMode, displayPlots, metrics);
 		this.plotter.setRefreshDelay(this.plotRefresh);
 		this.plotter.setSignificanceForCI(this.plotCISignificance);
 	}
@@ -217,7 +218,7 @@ public class LearningAlgorithmExperimenter {
 				trialMode = TrialMode.MOST_RECENT_TRIAL_ONLY;
 			}
 			
-			this.plotter = new PerformancePlotter(this.agentFactories[0].getAgentName(), 500, 250, 2, 500, trialMode);
+			this.plotter = new PerformancePlotterSilent(this.agentFactories[0].getAgentName(), 500, 250, 2, 500, trialMode, displayPlots);
 				
 		}
 		
@@ -225,9 +226,9 @@ public class LearningAlgorithmExperimenter {
 		//this.domain.addActionObserverForAllAction(plotter);
 		this.environmentSever = new EnvironmentServer(this.testEnvironment, plotter);
 		
-		if(this.displayPlots){
-			this.plotter.startGUI();
-		}
+//		if(this.displayPlots){
+//			this.plotter.startGUI();
+//		}
 		
 		for(int i = 0; i < this.agentFactories.length; i++){
 			
